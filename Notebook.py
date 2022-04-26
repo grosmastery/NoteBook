@@ -60,7 +60,7 @@ def sorter():
 
 
 def search():
-    search_contact = input("Введите ИМЯ или номер телефона контакта который хотите найти > ").title()
+    search_contact = input("Введите ИМЯ, НОМЕР ТЕЛЕФОНА или ЧАСТЬ ФАМИЛИИ контакта который хотите найти > ").title()
     if len(search_contact) == 1:
         for surname in read_file()[1::]:
             found = re.match(r'[А-Я]\w+', surname[1])
