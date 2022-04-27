@@ -17,17 +17,17 @@ def read_file():
 
 
 def main_menu():
-    print(f'На данный момент в записной книжке {len(read_file()) - 1} контактов')
+    print(f'At this moment in notebook {len(read_file()) - 1} contacts')
     while True:
         print(
-            '   1. Добавить запись\n'
-            '   2. Удалить запись\n'
-            '   3. Изменить запись\n'
-            '   4. Поиск\n'
-            '   5. Сортировка\n'
-            '   6. Выход\n'
+            '   1. Add note\n'
+            '   2. Delete note\n'
+            '   3. Change note\n'
+            '   4. Search\n'
+            '   5. Sort\n'
+            '   6. Exit\n'
         )
-        inputs = input('Cделайте Ваш выбор: ')
+        inputs = input('Choose: ')
         if inputs == '1':
             add_note()
         elif inputs == '2':
@@ -39,10 +39,10 @@ def main_menu():
         elif inputs == '5':
             sorter()
         elif inputs == '6':
-            print('Завершение работы')
+            print('Exit')
             break
         else:
-            print('Неверный ввод данных')
+            print('Invalid input')
 
 
 def sorter():
@@ -50,7 +50,7 @@ def sorter():
     with open(os.path.join('notebook', 'notebook.csv'), 'r', encoding='utf8') as f:
         reader = csv.DictReader(f)
         readers = list(reader)
-    sort_contact = input("Введите параметр по котоому хотите отсортировать контакты ИМЯ или ФАМИЛИЯ > ").title()
+    sort_contact = input("Input the parameter by which you want to sort contacts FIRST NAME or SURNAME > ").title()
     sorted_contact = sorted(readers, key=lambda i: i[sort_contact])
     with open(os.path.join('notebook', 'notebook.csv'), 'w', encoding='utf8') as f:
         writer = csv.writer(f)
@@ -60,12 +60,14 @@ def sorter():
 
 
 def search():
-    search_contact = input("Введите ИМЯ, НОМЕР ТЕЛЕФОНА или ЧАСТЬ ФАМИЛИИ контакта который хотите найти > ").title()
+    search_contact = input("Input FIRST NAME, PHONE NUMBER or SURNAME FIST LETTER of the contact with you want to find > ").title()
     if len(search_contact) == 1:
         for surname in read_file()[1::]:
-            found = re.match(r'[А-Я]\w+', surname[1])
+            found = re.match(r'[A-Z]\w+', surname[1])
             if found[0][0] == search_contact:
                 print(surname)
+    elif search_contact.lower() == 'all':
+        return list(map(lambda i: print(i), read_file()[1:]))
     else:
         for row in read_file():
             if row[0] == search_contact or row[2] == search_contact:
@@ -76,7 +78,7 @@ def checker(user_input, count):
     while True:
         if count == 0 or count == 1 or count == 2:
             if user_input == '':
-                print('Это обязательное поле для ввода')
+                print('This is required input field')
                 user_input = input('> ').title()
             else:
                 return user_input
@@ -88,7 +90,7 @@ def change_note():
     read_list = []
     read_list2 = []
     idx = 0
-    change_contact = input("Введите ИМЯ и ФАМИЛИЮ (или номер телефона) контакта который хотите изменить > ").title()
+    change_contact = input("Input FIRST NAME and SURNAME ( or PHONE NUMBER) of the contact with you want to change > ").title()
     for row in read_file():
         if f'{row[0]}{row[1]}' == change_contact or row[2] == change_contact:
             for head in header:
@@ -105,10 +107,10 @@ def change_note():
 
 def delete_note():
     line = []
-    delete_contact = input("Введите ИМЯ и ФАМИЛИЮ (или номер телефона) контакта который хотите удалить > ")
+    delete_contact = input("Input FIRST NAME and SURNAME ( or PHONE NUMBER) of the contact with you want to delete > ")
     for row in read_file():
         if f'{row[0]} {row[1]}' == delete_contact or row[2] == delete_contact:
-            print('Запись удалена')
+            print('Note deleted')
         else:
             line.append(row)
     with open(os.path.join('notebook', 'notebook.csv'), 'w', encoding='utf8') as f:
@@ -129,5 +131,5 @@ def add_note():
 
 
 if __name__ in '__main__':
-    header = ['Имя', 'Фамилия', 'Номер телефона', 'Адрес', 'Дата рождения']
+    header = ['Name', 'Surname', 'Phone number', 'Email Address', 'Birthday']
     main_menu()
